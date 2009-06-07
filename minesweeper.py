@@ -11,6 +11,7 @@ import gtk
 from minefield import MineField
 from minefieldview import MineFieldView
 from flagcounter import FlagCounter
+from timecounter import TimeCounter
 
 
 class MineSweeper(gtk.Window):
@@ -23,15 +24,15 @@ class MineSweeper(gtk.Window):
         self.rows = 15
         self.columns = 20
         self.minecount = 40
-        #self.rows = 10
-        #self.columns = 10
-        #self.minecount = 10
 
         vbox = gtk.VBox(False, 0)
         self.add(vbox)
 
         hbox = gtk.HBox(True, 0)
         vbox.pack_start(hbox, True, False, 10)
+
+	self.stopwatch = TimeCounter(32)
+	hbox.pack_start(self.stopwatch, False, False, 10)
 
         button = gtk.Button('New')
         button.connect("clicked", self.on_new_button_clicked)
