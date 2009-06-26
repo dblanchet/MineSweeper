@@ -51,6 +51,7 @@ class TimeCounter(gtk.DrawingArea):
     def stop(self):
 	if self.timeout_id > 0:
 	    gobject.source_remove(self.timeout_id)
+	    self.timeout_id = -1
 
     def reset(self):
 	self.elapsed = 0
