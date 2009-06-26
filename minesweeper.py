@@ -54,21 +54,22 @@ class MineSweeper(gtk.Window):
         vbox.pack_start(status, False, True, 0)
 
     def on_started(self, widget):
-	print "Started!"
+	self.stopwatch.start()
 
     def on_flagged(self, widget, count):
         self.count.set_value(self.minecount - count)
 
     def on_done(self, widget):
-	print "Done!"
+	self.stopwatch.stop()
 
     def on_explosion(self, widget):
-	print "Boom!"
+	self.stopwatch.stop()
 
     def on_new_button_clicked(self, widget, *args):
         minefield = MineField(self.columns, self.rows, self.minecount)
         self.view.set_minefield(minefield)
         self.count.set_value(self.minecount)
+	self.stopwatch.reset()
 
     def run(self):
         self.show_all()
