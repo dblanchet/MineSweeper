@@ -3,6 +3,10 @@ pygtk.require('2.0')
 import gtk
 import cairo
 
+import gobject
+
+import time
+
 class TimeCounter(gtk.DrawingArea):
 
     __gsignals__ = {
@@ -13,12 +17,15 @@ class TimeCounter(gtk.DrawingArea):
 	gtk.DrawingArea.__init__(self)
 	self.set_size_request(5 * height, height)
 	self.height = height
+	self.elapsed = 0
+	self.timeout_id = -1
 
     def do_expose_event(self, widget):
 	cr = widget.window.cairo_create()
 	
 	# Counter.
-	text = str("00:00")
+	t = time.localtime(int(self.elapsed))
+	text = time.strftime("%M:%S", t)
 
 	cr.set_font_size(self.height * 0.9)
         cr.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, 
@@ -33,12 +40,19 @@ class TimeCounter(gtk.DrawingArea):
         cr.move_to(w + xoff, yoff)
         cr.show_text(text)
 
+    def _update_time(self, msg=None):
+	self.elapsed += 1
+	self.queue_draw()
+	return True
+
     def start(self):
-	pass
+	self.timeout_id = gobject.timeout_add(1000, self._update_time)
 
     def stop(self):
-	pass
+	if self.timeout_id > 0:
+	    gobject.source_remove(self.timeout_id)
 
     def reset(self):
-	pass
+	self.elapsed = 0
+	self.queue_draw()
 
