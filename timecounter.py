@@ -54,6 +54,7 @@ class TimeCounter(gtk.DrawingArea):
             self.timeout_id = -1
 
     def reset(self):
+        self.stop()
         self.elapsed = 0
         self.queue_draw()
 
