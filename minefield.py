@@ -5,14 +5,16 @@ import random
 class MineField(object):
 
     MINE = '*'
+    EMPTY = ' '
 
     def __init__(self, width, height, minecount=None):
         self.width = width
         self.height = height
         self.minecount = minecount
-        self.field = [' '] * height * width
+        self.field = [self.EMPTY] * height * width
         self._put_mines()
         self._compute_counters()
+        self._first = True
 
     def _is_mine(self, i):
         return self.field[i] == self.MINE
@@ -73,6 +75,19 @@ class MineField(object):
         return self.minecount
 
     def get_cell(self, x, y):
+        # First uncovered cell must not be a mine.
+        if self._first:
+            self._first = False
+
+            old = x + y * self.width
+            if self._is_mine(old):
+                # Find another empty cell to put a mine.
+                new = old
+                while self._is_mine(new):
+                    new = random.randint(0, self.width * self.height - 1)
+                self.field[new] = self.MINE
+                self.field[old] = self.EMPTY
+                self._compute_counters()
         return self.field[x + y * self.width]
 
     def dump(self):
